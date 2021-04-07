@@ -3,6 +3,7 @@ const cors = require("cors");
 const htmlToPDF = require('html-pdf-node');
 const fs = require('fs');
 const { resolve } = require('path');
+const pdfMerge = require('easy-pdf-merge');
 
 const app = express();
 const PORT = 8000 || process.env.PORT;
@@ -11,11 +12,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.use(cors());
 
-app.get("/", (req, res) => {
-  res.send("Cookin");
-});
-
-app.post("/convert-pdf", (req, res) => {
+app.post("/convert-pdf", async (req, res) => {
   const { nome, bi, nif, fone, morada } = req.body;
   const options = { path: `${nome}.pdf`, format: 'A4', margin: {left: '20px', right: '20px'}};
   let returnedTestFile = '';
@@ -40,11 +37,16 @@ app.post("/convert-pdf", (req, res) => {
   returnedTestFile = returnedTestFile.replace('d__', fone);
   returnedTestFile = returnedTestFile.replace('e__', morada);
 
-  htmlToPDF.generatePdf({content: `${returnedTestFile}`}, options).then(pdfBuffer => {
-      console.log("", pdfBuffer);
+  // htmlToPDF.generatePdf({content: `${returnedTestFile}`}, options).then(pdfBuffer => {
+  //     console.log("", pdfBuffer);
+      
+  // });
+
+  pdfMerge([resolve(`${__dirname}/Miles.pdf`), resolve(`${__dirname}/Miles Johnson.pdf`)], `${__dirname}/outputFile.pdf`, function (err) {
+    console.log('Error merging file: ', err);
   });
 
   res.json({ Cookin: "Cooked" });
 });
 
-app.listen(PORT, () => console.log("Server running"));
+app.listen(PORT, () => console.log(`Server running ${PORT}`));
