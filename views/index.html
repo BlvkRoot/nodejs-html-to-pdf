@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <title>HTML TO PDF CONVERTER</title>
+</head>
+<body>
+    <section>
+        <form method="post" id="user_details">
+            <input type="text" name="nome" id="nome" placeholder="Nome">
+            <input type="text" name="bi" id="bi" placeholder="BI">
+            <input type="text" name="nif" id="nif" placeholder="NIF">
+            <input type="text" name="fone" id="fone" placeholder="Fone">
+            <input type="text" name="morada" id="morada" placeholder="Morada">
+            <button type="submit">Enviar</button>
+        </form>
+    </section>
+
+    <script>
+        document.querySelector('#user_details').addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            $.ajax({
+                type: "POST",
+                url: "http://localhost:8000/convert-pdf",
+                data: {
+                    'nome': document.querySelector('#nome').value,
+                    'bi': document.querySelector('#bi').value,
+                    'nif': document.querySelector('#nif').value,
+                    'fone': document.querySelector('#fone').value,
+                    'morada': document.querySelector('#morada').value,
+                },
+                dataType: "json",
+                success: function (response) {
+                    console.log('Success: ', response);
+                },
+                error: function (response) {
+                    console.log('Error: ', response);
+                }
+            });
+        });
+    </script>
+</body>
+</html>
